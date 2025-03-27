@@ -4,7 +4,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 import time
-from job_manager import start_job, end_job, get_job_info
+from src.job_manager import start_job, end_job, get_job_info
 
 # --- Auto-refresh ---
 AUTO_REFRESH_SECONDS = st.sidebar.slider("Auto-Refresh Interval (sec)", 15, 300, 60, step=15)

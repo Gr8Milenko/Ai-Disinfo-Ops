@@ -1,0 +1,14 @@
+streamlit
+spacy
+newspaper3k
+tweepy
+feedparser
+tldextract
+youtube-transcript-api
+python-dotenv
+dateparser
+pandas
+scikit-learn
+transformers
+datasets
+torch

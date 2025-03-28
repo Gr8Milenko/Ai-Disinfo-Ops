@@ -55,13 +55,16 @@ def load_inference_log():
     
     return df
 
+from pathlib import Path
 def extract_datetime_from_filename(filename):
     try:
-        full_path = Path(filename).resolve()
+        full_path = PROCESSED_DIR / Path(filename).name
         if full_path.exists():
             return datetime.fromtimestamp(full_path.stat().st_mtime)
+        else:
+            print(f"[WARN] File not found: {full_path}")
     except Exception as e:
-        print(f"[WARN] Could not extract datetime from {filename}: {e}")
+        print(f"[ERROR] Failed to get datetime for {filename}: {e}")
     return datetime.min
 
 def load_metadata_from_file(path):

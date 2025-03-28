@@ -7,6 +7,13 @@ import time
 
 # Add the project root to the path so "src" can be found
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src.config.paths import (
+    INFER_LOG_PATH,
+    LABEL_LOG_PATH,
+    REVIEW_QUEUE_PATH,
+    SCHED_PATH,
+    PROCESSED_DIR,
+)
 
 from datetime import datetime, timedelta
 from src.job_manager import start_job, end_job, get_job_info

@@ -39,22 +39,29 @@ def load_inference_log():
     with open(INFER_LOG_PATH, "r") as f:
         records = [json.loads(line) for line in f.readlines()]
     df = pd.DataFrame(records)
+    if not isinstance(df, pd.DataFrame) or df.empty:
+    st.warning("No valid entries in inference log.")
+    st.stop()
+    
     if not df.empty:
         df["confidence"] = df["result"].apply(lambda x: x["confidence"])
         df["flagged"] = df["result"].apply(lambda x: x["flagged"])
         df["reason"] = df["result"].apply(lambda x: x["reason"])
         df["datetime"] = df["file"].apply(extract_datetime_from_filename)
+        
         print("[DEBUG] Log loaded:", len(df))
         print("[DEBUG] Columns:", df.columns)
         print(df.head())
     return df
 
-def extract_datetime_from_filename(path):
+def extract_datetime_from_filename(filename):
     try:
-        stat = os.stat(path)
-        return datetime.fromtimestamp(stat.st_mtime)
-    except:
-        return datetime.min
+        full_path = PROCESSED_DIR / Path(filename).name
+        if full_path.exists():
+            return datetime.fromtimestamp(full_path.stat().st_mtime)
+    except Exception as e:
+        print(f"[WARN] Could not extract datetime from {filename}: {e}")
+    return datetime.min
 
 def load_metadata_from_file(path):
     try:

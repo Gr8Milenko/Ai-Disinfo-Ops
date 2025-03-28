@@ -1,9 +1,12 @@
 import sys
 import os
 import json
-import streamlit as st
-import pandas as pd
 import time
+
+import streamlit as st
+
+import pandas as pd
+time_threshold = pd.Timestamp.now() - pd.Timedelta(days=days_back)
 
 # Add the project root to the path so "src" can be found
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))

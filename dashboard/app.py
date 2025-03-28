@@ -39,19 +39,20 @@ def load_inference_log():
     with open(INFER_LOG_PATH, "r") as f:
         records = [json.loads(line) for line in f.readlines()]
     df = pd.DataFrame(records)
+
     if not isinstance(df, pd.DataFrame) or df.empty:
-    st.warning("No valid entries in inference log.")
-    st.stop()
+        st.warning("No valid entries in inference log.")
+        st.stop()
+
+    df["confidence"] = df["result"].apply(lambda x: x.get("confidence", 0.0))
+    df["flagged"] = df["result"].apply(lambda x: x.get("flagged", False))
+    df["reason"] = df["result"].apply(lambda x: x.get("reason", ""))
+    df["datetime"] = df["file"].apply(extract_datetime_from_filename)
+
+    print("[DEBUG] Log loaded:", len(df))
+    print("[DEBUG] Columns:", df.columns)
+    print(df.head())
     
-    if not df.empty:
-        df["confidence"] = df["result"].apply(lambda x: x["confidence"])
-        df["flagged"] = df["result"].apply(lambda x: x["flagged"])
-        df["reason"] = df["result"].apply(lambda x: x["reason"])
-        df["datetime"] = df["file"].apply(extract_datetime_from_filename)
-        
-        print("[DEBUG] Log loaded:", len(df))
-        print("[DEBUG] Columns:", df.columns)
-        print(df.head())
     return df
 
 def extract_datetime_from_filename(filename):

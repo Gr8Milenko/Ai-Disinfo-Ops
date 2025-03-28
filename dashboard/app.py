@@ -180,7 +180,7 @@ for idx, row in df.iterrows():
 
     metadata = load_metadata_from_file(row["file"])
     preview = metadata.get("text", "")[:1000]
-    st.text_area("Preview", preview, height=200, key="preview_{idx}")
+    st.text_area("Preview", preview, height=200, key=f"preview_{idx}")
 
     if metadata.get("named_entities"):
         st.markdown("**Named Entities:**")

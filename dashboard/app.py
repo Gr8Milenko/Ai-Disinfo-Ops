@@ -47,7 +47,8 @@ def load_inference_log():
     df["confidence"] = df["result"].apply(lambda x: x.get("confidence", 0.0))
     df["flagged"] = df["result"].apply(lambda x: x.get("flagged", False))
     df["reason"] = df["result"].apply(lambda x: x.get("reason", ""))
-    df["datetime"] = df["file"].apply(extract_datetime_from_filename)
+    df["datetime"] = df["file"].apply(lambda f: extract_datetime_from_filename(f))
+    st.write("[DEBUG] Sample resolved datetimes:", df["datetime"].tolist())
 
     print("[DEBUG] Log loaded:", len(df))
     print("[DEBUG] Columns:", df.columns)

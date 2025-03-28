@@ -92,6 +92,32 @@ for idx, row in df.iterrows():
     st.write(f"**Reason**: {row['reason']}")
     st.write(f"**File**: `{row['file']}`")
 
+    metadata = load_metadata_from_file(row["file"])
+    preview = metadata.get("text", "")[:1000]
+    st.text_area("Preview", preview, height=200, key=f"preview_{idx}")
+
+    if metadata.get("named_entities"):
+        st.markdown("**Named Entities:**")
+        st.write(", ".join(metadata["named_entities"][:10]))
+
+    if metadata.get("url"):
+        st.markdown(f"[Source Link]({metadata['url']})")
+
+    label = st.radio(
+        f"Label this item (ID: {row['file']})",
+        options=["None", "Disinformation", "Uncertain", "Legit"],
+        key=f"label_{idx}"
+    )
+    if label != "None":
+        save_manual_label(row["file"], label)
+        st.success(f"Labeled as: {label}")
+
+    st.markdown("---")
+    st.subheader(f"{row['type'].capitalize()} | Confidence: {row['confidence']:.2f}")
+    st.write(f"**Flagged**: {'Yes' if row['flagged'] else 'No'}")
+    st.write(f"**Reason**: {row['reason']}")
+    st.write(f"**File**: `{row['file']}`")
+
     metadata = metadata_utils.load_metadata_from_file(row["file"])
     preview = metadata.get("text", "")[:1000]
     st.text_area("Preview", preview, height=200)

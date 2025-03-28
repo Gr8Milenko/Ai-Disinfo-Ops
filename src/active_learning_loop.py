@@ -1,51 +1,70 @@
 import os
 import json
-import numpy as np
-import pandas as pd
-from preprocess import preprocess_and_vectorize
-from models.bert_model import BertDisinfoModel
+from datetime import datetime
 
-REVIEW_QUEUE_PATH = "../labels/review_queue.jsonl"
-NUM_QUERY_SAMPLES = 10  # number of uncertain samples to queue
+from src.utils.data_loader import load_all_metadata_files
+from src.utils.label_utils import load_manual_labels
+from src.utils.file_utils import safe_write_json
 
-def entropy(probabilities):
-    return -np.sum(probabilities * np.log(probabilities + 1e-9), axis=1)
+from src.config.paths import (
+    REVIEW_QUEUE_PATH,
+    PROCESSED_DIR,
+    LABEL_LOG_PATH,
+)
 
-def run_active_learning_round():
-    X, y, df = preprocess_and_vectorize()
+# --- Config ---
+UNCERTAINTY_THRESHOLD = 0.15
+SAMPLE_LIMIT = 25
 
-    if X.empty or len(y.unique()) < 2:
-        print("[ACTIVE] Not enough labeled data to train.")
-        return
 
-    model = BertDisinfoModel()
-    print("[ACTIVE] Training BERT model on labeled data...")
-    model.fit(df["text"], y)
+def calculate_uncertainty(result):
+    confidence = result.get("confidence", 0.0)
+    return 1.0 - confidence
 
-    all_df = df.copy()
-    all_df["is_labeled"] = all_df["label"].notnull()
-    unlabeled_df = all_df[~all_df["is_labeled"]].copy()
 
-    if len(unlabeled_df) == 0:
-        print("[ACTIVE] No unlabeled samples available.")
-        return
+def build_review_queue(interactive=False):
+    """
+    Returns a list of uncertain samples for review.
+    If interactive=False, also writes the queue to disk.
+    """
+    all_metadata = load_all_metadata_files(PROCESSED_DIR)
+    manual_labels = load_manual_labels(LABEL_LOG_PATH)
 
-    print(f"[ACTIVE] Predicting on {len(unlabeled_df)} unlabeled samples...")
-    probs = model.predict_proba(unlabeled_df["text"].tolist())
-    unlabeled_df["uncertainty"] = entropy(probs)
+    review_items = []
 
-    top_uncertain = unlabeled_df.sort_values("uncertainty", ascending=False).head(NUM_QUERY_SAMPLES)
+    for path, metadata in all_metadata.items():
+        if path in manual_labels:
+            continue
 
-    with open(REVIEW_QUEUE_PATH, "a", encoding="utf-8") as f:
-        for _, row in top_uncertain.iterrows():
-            queue_item = {
-                "file": row["source_file"],
-                "uncertainty": row["uncertainty"],
-                "text": row["text"][:1000]
+        result = metadata.get("result", {})
+        uncertainty = calculate_uncertainty(result)
+
+        if uncertainty >= UNCERTAINTY_THRESHOLD:
+            item = {
+                "file": path,
+                "uncertainty": round(uncertainty, 4),
+                "text": metadata.get("text", "")[:1000],
+                "type": metadata.get("type", "unknown"),
+                "url": metadata.get("url"),
             }
-            f.write(json.dumps(queue_item) + "\n")
+            review_items.append(item)
 
-    print(f"[ACTIVE] Pushed {len(top_uncertain)} uncertain samples to review queue.")
+    review_items.sort(key=lambda x: x["uncertainty"], reverse=True)
+    top_items = review_items[:SAMPLE_LIMIT]
+
+    if not interactive:
+        with open(REVIEW_QUEUE_PATH, "w", encoding="utf-8") as f:
+            for item in top_items:
+                f.write(json.dumps(item) + "\n")
+        print(f"[INFO] Wrote {len(top_items)} uncertain samples to queue")
+
+    return top_items
+
+
+def main():
+    print("[INFO] Starting Active Learning Loop")
+    build_review_queue(interactive=False)
+
 
 if __name__ == "__main__":
-    run_active_learning_round()
+    main()

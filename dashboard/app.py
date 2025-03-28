@@ -24,7 +24,7 @@ PROCESSED_DIR = "../data/processed"
 INFER_LOG_PATH = "../logs/inference_log.jsonl"
 LABEL_LOG_PATH = "../labels/manual_labels.jsonl"
 REVIEW_QUEUE_PATH = "../labels/review_queue.jsonl"
-SCHED_PATH = "../logs/scheduler_config.json"
+SCHED_PATH = "/mount/src/ai-disinfo-ops/logs/scheduler_config.json"
 
 # --- Loaders ---
 @st.cache_data(ttl=30)

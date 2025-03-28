@@ -57,7 +57,7 @@ def load_inference_log():
 
 def extract_datetime_from_filename(filename):
     try:
-        full_path = PROCESSED_DIR / Path(filename).name
+        full_path = Path(filename).resolve()
         if full_path.exists():
             return datetime.fromtimestamp(full_path.stat().st_mtime)
     except Exception as e:

@@ -14,7 +14,7 @@ from src.config.paths import (
     LABEL_LOG_PATH,
     REVIEW_QUEUE_PATH,
     SCHED_PATH,
-    PROCESSED_DIR,
+    PROCESSED_DIR,p
 )
 
 from datetime import datetime, timedelta
@@ -66,6 +66,10 @@ def save_manual_label(metadata_id, label):
         "label": label,
         "timestamp": datetime.now().isoformat()
     }
+
+    # Ensure labels directory exists
+    Path(LABEL_LOG_PATH).parent.mkdir(parents=True, exist_ok=True)
+
     with open(LABEL_LOG_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(label_entry) + "\n")
 

@@ -14,7 +14,7 @@ from src.config.paths import (
     LABEL_LOG_PATH,
     REVIEW_QUEUE_PATH,
     SCHED_PATH,
-    PROCESSED_DIR,p
+    PROCESSED_DIR,
 )
 
 from datetime import datetime, timedelta

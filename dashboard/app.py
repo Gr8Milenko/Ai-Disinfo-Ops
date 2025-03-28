@@ -147,7 +147,8 @@ if df.empty:
 st.sidebar.header("Filters")
 filter_type = st.sidebar.selectbox("Type", options=["All", "article", "tweet", "video_transcript"])
 filter_flagged = st.sidebar.checkbox("Flagged only", value=False)
-min_conf = st.sidebar.slider("Min Confidence", 0.0, 1.0, 0.5, step=0.01)
+min_conf_pct = st.sidebar.slider("Min Confidence (%)", 0, 100, 50, step=1)
+min_conf = min_conf_pct / 100.0  # convert to float for filtering
 days_back = st.sidebar.slider("Days Back", 0, 30, 7)
 
 from datetime import time as dtime
@@ -173,7 +174,7 @@ if not df.empty:
 
 # --- Show Results ---
 for idx, row in df.iterrows():
-    st.subheader(f"{row['type'].capitalize()} | Confidence: {row['confidence']:.2f}")
+    st.subheader(f"{row['type'].capitalize()} | Confidence: {int(row['confidence'] * 100)}%")
     st.write(f"**Flagged**: {'Yes' if row['flagged'] else 'No'}")
     st.write(f"**Reason**: {row['reason']}")
     st.write(f"**File**: `{row['file']}`")

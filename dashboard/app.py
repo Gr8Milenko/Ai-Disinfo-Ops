@@ -44,11 +44,10 @@ def load_inference_log():
         df["flagged"] = df["result"].apply(lambda x: x["flagged"])
         df["reason"] = df["result"].apply(lambda x: x["reason"])
         df["datetime"] = df["file"].apply(extract_datetime_from_filename)
+        print("[DEBUG] Log loaded:", len(df))
+        print("[DEBUG] Columns:", df.columns)
+        print(df.head())
     return df
-
-print("[DEBUG] Log loaded:", len(df))
-print("[DEBUG] Columns:", df.columns)
-print(df.head())
 
 def extract_datetime_from_filename(path):
     try:

@@ -6,7 +6,7 @@ import time
 import streamlit as st
 
 import pandas as pd
-time_threshold = pd.Timestamp.now() - pd.Timedelta(days=days_back)
+
 
 # Add the project root to the path so "src" can be found
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -149,7 +149,7 @@ filter_type = st.sidebar.selectbox("Type", options=["All", "article", "tweet", "
 filter_flagged = st.sidebar.checkbox("Flagged only", value=False)
 min_conf = st.sidebar.slider("Min Confidence", 0.0, 1.0, 0.5, step=0.01)
 days_back = st.sidebar.slider("Days Back", 0, 30, 7)
-time_threshold = datetime.now() - timedelta(days=days_back)
+time_threshold = pd.Timestamp.now() - pd.Timedelta(days=days_back)
 
 df = df[df["datetime"] >= time_threshold]
 if filter_type != "All":

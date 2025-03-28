@@ -19,8 +19,10 @@ from src.config.paths import (
 
 from datetime import datetime, timedelta
 from src.job_manager import start_job, end_job, get_job_info
+
 print("cwd:", os.getcwd())
 print("sys.path:", sys.path)
+
 # --- Auto-refresh ---
 AUTO_REFRESH_SECONDS = st.sidebar.slider("Auto-Refresh Interval (sec)", 15, 300, 60, step=15)
 if "last_refresh" not in st.session_state:

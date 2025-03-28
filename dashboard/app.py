@@ -149,7 +149,13 @@ filter_type = st.sidebar.selectbox("Type", options=["All", "article", "tweet", "
 filter_flagged = st.sidebar.checkbox("Flagged only", value=False)
 min_conf = st.sidebar.slider("Min Confidence", 0.0, 1.0, 0.5, step=0.01)
 days_back = st.sidebar.slider("Days Back", 0, 30, 7)
-time_threshold = pd.Timestamp.now() - pd.Timedelta(days=days_back)
+
+from datetime import time as dtime
+# Create today's start timestamp to include entries from today
+time_threshold = pd.Timestamp.combine(
+    pd.Timestamp.now().date() - pd.Timedelta(days=days_back),
+    dtime.min
+)
 
 df = df[df["datetime"] >= time_threshold]
 if filter_type != "All":

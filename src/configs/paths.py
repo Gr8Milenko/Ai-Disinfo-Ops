@@ -12,3 +12,5 @@ LABEL_LOG_PATH = LABELS_DIR / "manual_labels.jsonl"
 REVIEW_QUEUE_PATH = LABELS_DIR / "review_queue.jsonl"
 SCHED_PATH = LOGS_DIR / "scheduler_config.json"
 PROCESSED_DIR = DATA_DIR / "processed"
+
+print("[DEBUG] paths.py loaded")

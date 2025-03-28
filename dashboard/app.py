@@ -126,6 +126,12 @@ save_sched(sched_cfg)
 st.title("Disinformation Detection Dashboard")
 
 df = load_inference_log()
+st.write("[DEBUG] Loaded log data:")
+st.write(df)
+
+if not df.empty:
+    st.write("[DEBUG] Sample confidence values:", df["confidence"].tolist())
+    st.write("[DEBUG] Sample datetime values:", df["datetime"].tolist())
 if df.empty:
     st.warning("No inference logs found.")
     st.stop()

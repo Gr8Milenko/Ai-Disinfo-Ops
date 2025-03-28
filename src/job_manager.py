@@ -5,9 +5,11 @@ import psutil
 from datetime import datetime
 
 JOB_FILE = "../logs/job_status.json"
-
 def ensure_job_file():
-    if not os.path.exists(JOB_FILE):
+# Create logs directory if it doesn't exist
+os.makedirs(os.path.dirname(JOB_FILE), exist_ok=True)
+# Then create the job_status.json if it doesn't exist
+if not os.path.exists(JOB_FILE):
         with open(JOB_FILE, "w") as f:
             f.write("{}")
 

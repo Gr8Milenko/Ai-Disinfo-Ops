@@ -46,6 +46,10 @@ def load_inference_log():
         df["datetime"] = df["file"].apply(extract_datetime_from_filename)
     return df
 
+print("[DEBUG] Log loaded:", len(df))
+print("[DEBUG] Columns:", df.columns)
+print(df.head())
+
 def extract_datetime_from_filename(path):
     try:
         stat = os.stat(path)

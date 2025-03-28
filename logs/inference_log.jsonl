@@ -1,2 +1,2 @@
-{"file": "sample1.json", "type": "article", "result": {"confidence": 0.87, "flagged": true, "reason": "Propaganda keywords detected"}}
-{"file": "sample2.json", "type": "tweet", "result": {"confidence": 0.45, "flagged": false, "reason": "Low impact"}}
+{"file": "sample1.json", "type": "article", "result": {"confidence": 0.10, "flagged": true, "reason": "Propaganda keywords detected"}}
+{"file": "sample2.json", "type": "tweet", "result": {"confidence": 0.25, "flagged": false, "reason": "Low impact"}}

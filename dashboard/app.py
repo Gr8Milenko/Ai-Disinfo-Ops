@@ -7,6 +7,8 @@ import time
 
 # Add the project root to the path so "src" can be found
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# --- Paths ---
 from src.config.paths import (
     INFER_LOG_PATH,
     LABEL_LOG_PATH,
@@ -25,13 +27,6 @@ if "last_refresh" not in st.session_state:
 if time.time() - st.session_state.last_refresh > AUTO_REFRESH_SECONDS:
     st.session_state.last_refresh = time.time()
     st.experimental_rerun()
-
-# --- Paths ---
-PROCESSED_DIR = "../data/processed"
-INFER_LOG_PATH = "../logs/inference_log.jsonl"
-LABEL_LOG_PATH = "../labels/manual_labels.jsonl"
-REVIEW_QUEUE_PATH = "../labels/review_queue.jsonl"
-SCHED_PATH = "/mount/src/ai-disinfo-ops/logs/scheduler_config.json"
 
 # --- Loaders ---
 @st.cache_data(ttl=30)

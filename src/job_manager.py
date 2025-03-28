@@ -6,6 +6,12 @@ from datetime import datetime
 
 JOB_FILE = "../logs/job_status.json"
 
+def ensure_job_file():
+    if not os.path.exists(JOB_FILE):
+        with open(JOB_FILE, "w") as f:
+            f.write("{}")
+
+ensure_job_file()
 def load_status():
     if not os.path.exists(JOB_FILE):
         return {}
